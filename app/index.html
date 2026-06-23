@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0c0e17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="دليل النقل المتكامل للقاهرة الكبرى - مترو + LRT + مونوريل">
+    <title>محطتي 2026 - دليل النقل المتكامل</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <style>
+        /* Install Button Styles */
+        .install-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(0,136,255,0.95), rgba(184,41,221,0.95));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 300;
+            transform: translateY(-100%);
+            transition: transform 0.4s cubic-bezier(0.32, 1, 0.23, 1);
+            box-shadow: 0 4px 20px rgba(0, 136, 255, 0.3);
+        }
+
+        .install-banner.show {
+            transform: translateY(0);
+        }
+
+        .install-banner .install-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .install-banner .install-icon {
+            font-size: 20px;
+        }
+
+        .install-banner .install-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .install-btn {
+            background: white;
+            color: var(--neon-blue);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .install-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .install-btn:active {
+            transform: scale(0.95);
+        }
+
+        .install-dismiss {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .install-dismiss:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* iOS Install Instructions */
+        .ios-install-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .ios-install-modal.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .ios-install-content {
+            background: linear-gradient(145deg, #0e111d, #070a14);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 28px;
+            max-width: 320px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .ios-install-content h3 {
+            color: white;
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .ios-install-content p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .ios-install-content .step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+
+        .ios-install-content .step-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .ios-install-content .step-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .ios-install-content .close-ios-btn {
+            width: 100%;
+            background: var(--grad-primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 16px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* About Page Styles */
+        .about-section {
+            padding: 20px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .about-section h2 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff, var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-section h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .about-section p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .about-section .highlight {
+            color: var(--neon-blue);
+            font-weight: 700;
+        }
+
+        .about-section .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .about-section .feature-item {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 14px 10px;
+            text-align: center;
+            transition: border-color 0.2s ease;
+        }
+
+        .about-section .feature-item:hover {
+            border-color: rgba(0, 136, 255, 0.2);
+        }
+
+        .about-section .feature-icon {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .about-section .feature-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .about-section .feature-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Fare Table */
+        .fare-table-container {
+            margin: 16px 0;
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .fare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .fare-table th {
+            background: linear-gradient(135deg, rgba(0,136,255,0.15), rgba(184,41,221,0.1));
+            color: var(--neon-cyan);
+            font-weight: 800;
+            padding: 10px 8px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-glass);
+            white-space: nowrap;
+        }
+
+        .fare-table td {
+            padding: 10px 8px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            font-weight: 600;
+        }
+
+        .fare-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .fare-table .price {
+            color: var(--neon-gold);
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .fare-table .ticket-color {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: 6px;
+            vertical-align: middle;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .fare-table .color-yellow { background: #ffcc00; }
+        .fare-table .color-green { background: #22dd66; }
+        .fare-table .color-red { background: #ff3344; }
+        .fare-table .color-blue { background: #0088ff; }
+
+        .fare-note {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(255,170,0,0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255,170,0,0.1);
+        }
+
+        .network-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .network-stat {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 14px 8px;
+            text-align: center;
+        }
+
+        .network-stat .stat-number {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--neon-blue);
+            display: block;
+        }
+
+        .network-stat .stat-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .creator-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 24px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(0,136,255,0.08), rgba(184,41,221,0.05));
+            border: 1px solid rgba(0,136,255,0.15);
+            border-radius: 16px;
+        }
+
+        .creator-badge .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 900;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .creator-badge .creator-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .creator-badge .creator-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .creator-badge .creator-role {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .creator-badge .creator-link {
+            font-size: 10px;
+            color: var(--neon-blue);
+            text-decoration: none;
+            margin-top: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(0,136,255,0.15), rgba(184,41,221,0.1));
+            border: 1px solid rgba(0,136,255,0.2);
+            color: var(--neon-cyan);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        /* Push content down when install banner is visible */
+        .app-shell.banner-visible {
+            padding-top: 56px;
+        }
+
+        .pane-search.banner-visible {
+            padding-top: 76px;
+        }
+    </style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+
+    <!-- Install Banner -->
+    <div class="install-banner" id="install-banner">
+        <div class="install-text">
+            <span class="install-icon">📲</span>
+            <span>ثبت التطبيق على شاشتك الرئيسية!</span>
+        </div>
+        <div class="install-actions">
+            <button class="install-btn" id="install-btn">تثبيت</button>
+            <button class="install-dismiss" id="install-dismiss">✕</button>
+        </div>
+    </div>
+
+    <!-- iOS Install Modal -->
+    <div class="ios-install-modal" id="ios-install-modal">
+        <div class="ios-install-content">
+            <h3>📱 تثبيت على iPhone</h3>
+            <p>اضغط على الزر أدناه واتبع الخطوات:</p>
+            <div class="step">
+                <span class="step-icon">⬆️</span>
+                <span class="step-text">اضغط على زر "المشاركة" في شريط Safari</span>
+            </div>
+            <div class="step">
+                <span class="step-icon">➕</span>
+                <span class="step-text">اختر "إضافة إلى الشاشة الرئيسية"</span>
+            </div>
+            <div class="step">
+                <span class="step-icon">✅</span>
+                <span class="step-text">اضغط "إضافة" في النافذة المنبثقة</span>
+            </div>
+            <button class="close-ios-btn" id="close-ios-btn">فهمت!</button>
+        </div>
+    </div>
+
+    <div class="ambient-glow"></div>
+
+    <div class="app-shell" id="app-shell">
+        <main class="pane-search" id="pane-search">
+            <header class="app-header">
+                <div class="logo">MAHATATY <span class="neon-badge">2026</span></div>
+                <p class="subtitle">شبكة النقل المتكاملة للقاهرة الكبرى - مترو + LRT + مونوريل</p>
+            </header>
+
+            <section class="booking-card">
+                <div class="input-container">
+                    <label>منين هتبدأ رحلتك؟ 🗺️</label>
+                    <input type="text" id="start-input" placeholder="اكتب محطة، جامعة، معلم سياحي..." autocomplete="off">
+                    <div id="start-suggestions" class="suggestions-box"></div>
+                </div>
+
+                <div class="route-divider">
+                    <div class="divider-line"></div>
+                    <button id="swap-btn" class="swap-button" title="تبديل الوجهات">🔀</button>
+                </div>
+
+                <div class="input-container">
+                    <label>محطتك الأخيرة فين؟ 🎯</label>
+                    <input type="text" id="end-input" placeholder="اكتب محطة، جامعة، معلم سياحي..." autocomplete="off">
+                    <div id="end-suggestions" class="suggestions-box"></div>
+                </div>
+
+                <button id="calculate-btn" class="btn-primary">استخرج تذكرتي الذكية 💳⚡</button>
+            </section>
+        </main>
+
+        <section class="pane-results" id="results-pane">
+            <div class="drawer-header">
+                <div class="drawer-handle"></div>
+                <button id="close-results-btn" class="close-drawer-btn">⬇ إغلاق</button>
+            </div>
+
+            <div class="results-placeholder" id="placeholder-text">
+                <div class="pulse-ring"></div>
+                <p>صمم طريقك ودع التذكرة الذكية تتجلى هنا... ✨💳</p>
+            </div>
+
+            <div class="results-content hidden" id="results-content">
+                <div class="premium-ticket-card" id="ticket-card">
+                    <div class="card-shimmer"></div>
+                    <div class="card-header">
+                        <span class="card-brand">MAHATATY UNIFIED</span>
+                        <div class="contactless-icon">⚡📶</div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="ticket-route-display">
+                            <div class="station-block">
+                                <span class="label">البداية</span>
+                                <span id="ticket-start" class="val">---</span>
+                            </div>
+                            <div class="route-glowing-line">
+                                <div class="train-dot"></div>
+                            </div>
+                            <div class="station-block">
+                                <span class="label">النهاية</span>
+                                <span id="ticket-end" class="val">---</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="fare-info">
+                            <span class="label">تذكرة موحدة متكاملة</span>
+                            <span class="value" id="ticket-price">0.00 EGP</span>
+                        </div>
+                        <div class="hologram-chip">💿</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon">⏱️</span>
+                        <span class="stat-label">زمن الرحلة</span>
+                        <span class="stat-value" id="stat-time">-- دقيقة</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🚇</span>
+                        <span class="stat-label">محطات المترو</span>
+                        <span class="stat-value" id="stat-metro">-- محطة</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">⚡</span>
+                        <span class="stat-label">محطات LRT</span>
+                        <span class="stat-value" id="stat-lrt">-- محطة</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🚝</span>
+                        <span class="stat-label">محطات المونوريل</span>
+                        <span class="stat-value" id="stat-monorail">-- محطة</span>
+                    </div>
+                </div>
+
+                <div class="route-timeline-container">
+                    <h4>خط سير الرحلة التفصيلي 🧭</h4>
+                    <ul class="timeline" id="route-timeline-list"></ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <nav class="bottom-nav">
+        <button class="nav-item active" id="nav-home">
+            <span class="nav-icon">🚀</span>
+            <span class="nav-text">الرحلة</span>
+        </button>
+        <button class="nav-item" id="nav-about">
+            <span class="nav-icon">ℹ️</span>
+            <span class="nav-text">عنا</span>
+        </button>
+    </nav>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
