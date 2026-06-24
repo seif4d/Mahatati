@@ -2,7 +2,7 @@
   "name": "محطتي - دليل النقل المتكامل للقاهرة الكبرى",
   "short_name": "محطتي",
   "description": "شبكة النقل المتكاملة: مترو + LRT + مونوريل - القاهرة الكبرى 2026",
-  "start_url": "/app/index.html",
+  "start_url": "/Mahatati/app/index.html",
   "display": "standalone",
   "background_color": "#05060b",
   "theme_color": "#0c0e17",
